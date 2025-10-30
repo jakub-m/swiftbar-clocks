@@ -1,9 +1,24 @@
 use chrono::{Local, Timelike};
 use chrono_tz::Tz;
+use clap::Parser;
 use serde::{Deserialize, Serialize};
-use std::env;
 use std::fs;
 use std::io::{self, Write};
+
+#[derive(Parser, Debug)]
+#[command(name = "swiftbar_clocks")]
+#[command(about = "Display world clocks with unicode clock icons", long_about = None)]
+struct Args {
+    /// Path to configuration file
+    #[arg(short, long, env = "CLOCK_CONFIG")]
+    config: Option<String>,
+
+    /// List all available timezones
+    ///
+    /// See also: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+    #[arg(short = 'l', long = "list-timezones")]
+    list_timezones: bool,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Config {
@@ -57,10 +72,14 @@ fn get_accurate_clock_icon(hour: u32, minute: u32) -> &'static str {
     }
 }
 
-fn load_config() -> Config {
-    // Check for config file from command line argument
-    let config_path = env::args().nth(1).or_else(|| env::var("CLOCK_CONFIG").ok());
+fn list_timezones() {
+    // chrono-tz provides TZ_VARIANTS constant with all timezones
+    for tz in chrono_tz::TZ_VARIANTS {
+        println!("{}", tz.name());
+    }
+}
 
+fn load_config(config_path: Option<String>) -> Config {
     if let Some(path) = config_path {
         if let Ok(content) = fs::read_to_string(&path) {
             if let Ok(config) = serde_yaml::from_str::<Config>(&content) {
@@ -89,7 +108,15 @@ fn load_config() -> Config {
 }
 
 fn main() {
-    let config = load_config();
+    let args = Args::parse();
+
+    // If list-timezones flag is set, list timezones and exit
+    if args.list_timezones {
+        list_timezones();
+        return;
+    }
+
+    let config = load_config(args.config);
     let local_time = Local::now();
 
     // Get clock icon based on current local minutes
