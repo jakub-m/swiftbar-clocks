@@ -1,0 +1,11 @@
+cities:
+  - name: New York
+    timezone: America/New_York
+  - name: London
+    timezone: Europe/London
+  - name: Tokyo
+    timezone: Asia/Tokyo
+  - name: Sydney
+    timezone: Australia/Sydney
+  - name: Paris
+    timezone: Europe/Paris
