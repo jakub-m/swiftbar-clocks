@@ -9,6 +9,32 @@ use std::path::PathBuf;
 
 const DEFAULT_SWIFTBAR_CLOCK_CONFIG: &str = "~/.config/swiftbar_clock_config.yaml";
 
+// Clock face constants (1F55B-1F567)
+const CLOCK_1200: &str = "\u{1F55B}"; // twelve o'clock
+const CLOCK_1230: &str = "\u{1F567}"; // twelve-thirty
+const CLOCK_0100: &str = "\u{1F550}"; // one o'clock
+const CLOCK_0130: &str = "\u{1F55C}"; // one-thirty
+const CLOCK_0200: &str = "\u{1F551}"; // two o'clock
+const CLOCK_0230: &str = "\u{1F55D}"; // two-thirty
+const CLOCK_0300: &str = "\u{1F552}"; // three o'clock
+const CLOCK_0330: &str = "\u{1F55E}"; // three-thirty
+const CLOCK_0400: &str = "\u{1F553}"; // four o'clock
+const CLOCK_0430: &str = "\u{1F55F}"; // four-thirty
+const CLOCK_0500: &str = "\u{1F554}"; // five o'clock
+const CLOCK_0530: &str = "\u{1F560}"; // five-thirty
+const CLOCK_0600: &str = "\u{1F555}"; // six o'clock
+const CLOCK_0630: &str = "\u{1F561}"; // six-thirty
+const CLOCK_0700: &str = "\u{1F556}"; // seven o'clock
+const CLOCK_0730: &str = "\u{1F562}"; // seven-thirty
+const CLOCK_0800: &str = "\u{1F557}"; // eight o'clock
+const CLOCK_0830: &str = "\u{1F563}"; // eight-thirty
+const CLOCK_0900: &str = "\u{1F558}"; // nine o'clock
+const CLOCK_0930: &str = "\u{1F564}"; // nine-thirty
+const CLOCK_1000: &str = "\u{1F559}"; // ten o'clock
+const CLOCK_1030: &str = "\u{1F565}"; // ten-thirty
+const CLOCK_1100: &str = "\u{1F55A}"; // eleven o'clock
+const CLOCK_1130: &str = "\u{1F566}"; // eleven-thirty
+
 #[derive(Parser, Debug)]
 #[command(name = "swiftbar_clocks")]
 #[command(about = "Display world clocks with unicode clock icons", long_about = None)]
@@ -52,33 +78,58 @@ fn get_accurate_clock_icon(hour: u32, minute: u32) -> &'static str {
     };
 
     match (display_hour, rounded_minute) {
-        (12, 0) | (0, 0) => "🕐",
-        (12, 30) | (0, 30) => "🕜",
-        (1, 0) => "🕑",
-        (1, 30) => "🕝",
-        (2, 0) => "🕒",
-        (2, 30) => "🕞",
-        (3, 0) => "🕓",
-        (3, 30) => "🕟",
-        (4, 0) => "🕔",
-        (4, 30) => "🕠",
-        (5, 0) => "🕕",
-        (5, 30) => "🕡",
-        (6, 0) => "🕖",
-        (6, 30) => "🕢",
-        (7, 0) => "🕗",
-        (7, 30) => "🕣",
-        (8, 0) => "🕘",
-        (8, 30) => "🕤",
-        (9, 0) => "🕙",
-        (9, 30) => "🕥",
-        (10, 0) => "🕚",
-        (10, 30) => "🕦",
-        (11, 0) => "🕛",
-        (11, 30) => "🕧",
-        _ => "🕐",
+        (12, 0) | (0, 0) => CLOCK_1200,
+        (12, 30) | (0, 30) => CLOCK_1230,
+        (1, 0) => CLOCK_0100,
+        (1, 30) => CLOCK_0130,
+        (2, 0) => CLOCK_0200,
+        (2, 30) => CLOCK_0230,
+        (3, 0) => CLOCK_0300,
+        (3, 30) => CLOCK_0330,
+        (4, 0) => CLOCK_0400,
+        (4, 30) => CLOCK_0430,
+        (5, 0) => CLOCK_0500,
+        (5, 30) => CLOCK_0530,
+        (6, 0) => CLOCK_0600,
+        (6, 30) => CLOCK_0630,
+        (7, 0) => CLOCK_0700,
+        (7, 30) => CLOCK_0730,
+        (8, 0) => CLOCK_0800,
+        (8, 30) => CLOCK_0830,
+        (9, 0) => CLOCK_0900,
+        (9, 30) => CLOCK_0930,
+        (10, 0) => CLOCK_1000,
+        (10, 30) => CLOCK_1030,
+        (11, 0) => CLOCK_1100,
+        (11, 30) => CLOCK_1130,
+        _ => CLOCK_1200,
     }
 }
+
+// 🕛      travel-and-places       time    twelve o’clock  1F55B
+// 🕧      travel-and-places       time    twelve-thirty   1F567
+// 🕐      travel-and-places       time    one o’clock     1F550
+// 🕜      travel-and-places       time    one-thirty      1F55C
+// 🕑      travel-and-places       time    two o’clock     1F551
+// 🕝      travel-and-places       time    two-thirty      1F55D
+// 🕒      travel-and-places       time    three o’clock   1F552
+// 🕞      travel-and-places       time    three-thirty    1F55E
+// 🕓      travel-and-places       time    four o’clock    1F553
+// 🕟      travel-and-places       time    four-thirty     1F55F
+// 🕔      travel-and-places       time    five o’clock    1F554
+// 🕠      travel-and-places       time    five-thirty     1F560
+// 🕕      travel-and-places       time    six o’clock     1F555
+// 🕡      travel-and-places       time    six-thirty      1F561
+// 🕖      travel-and-places       time    seven o’clock   1F556
+// 🕢      travel-and-places       time    seven-thirty    1F562
+// 🕗      travel-and-places       time    eight o’clock   1F557
+// 🕣      travel-and-places       time    eight-thirty    1F563
+// 🕘      travel-and-places       time    nine o’clock    1F558
+// 🕤      travel-and-places       time    nine-thirty     1F564
+// 🕙      travel-and-places       time    ten o’clock     1F559
+// 🕥      travel-and-places       time    ten-thirty      1F565
+// 🕚      travel-and-places       time    eleven o’clock  1F55A
+// 🕦      travel-and-places       time    eleven-thirty   1F566
 
 fn list_timezones() {
     // chrono-tz provides TZ_VARIANTS constant with all timezones
