@@ -2,16 +2,20 @@ use chrono::{Local, Timelike};
 use chrono_tz::Tz;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::fs;
 use std::io::{self, Write};
+use std::path::PathBuf;
+
+const DEFAULT_SWIFTBAR_CLOCK_CONFIG: &str = "~/.config/swiftbar_clock_config.yaml";
 
 #[derive(Parser, Debug)]
 #[command(name = "swiftbar_clocks")]
 #[command(about = "Display world clocks with unicode clock icons", long_about = None)]
 struct Args {
     /// Path to configuration file
-    #[arg(short, long, env = "CLOCK_CONFIG")]
-    config: Option<String>,
+    #[arg(short, long, env = "SWIFTBAR_CLOCK_CONFIG", default_value=DEFAULT_SWIFTBAR_CLOCK_CONFIG)]
+    config: String,
 
     /// List all available timezones
     ///
@@ -41,7 +45,11 @@ fn get_accurate_clock_icon(hour: u32, minute: u32) -> &'static str {
         0
     };
 
-    let display_hour = if minute >= 45 { (hour + 1) % 12 } else { hour % 12 };
+    let display_hour = if minute >= 45 {
+        (hour + 1) % 12
+    } else {
+        hour % 12
+    };
 
     match (display_hour, rounded_minute) {
         (12, 0) | (0, 0) => "🕐",
@@ -79,11 +87,24 @@ fn list_timezones() {
     }
 }
 
-fn load_config(config_path: Option<String>) -> Config {
-    if let Some(path) = config_path {
-        if let Ok(content) = fs::read_to_string(&path) {
-            if let Ok(config) = serde_yaml::from_str::<Config>(&content) {
-                return config;
+fn load_config(path: String) -> Config {
+    // Try provided path first
+    if let Ok(content) = fs::read_to_string(&path) {
+        if let Ok(config) = serde_yaml::from_str::<Config>(&content) {
+            return config;
+        }
+    }
+
+    // If loading failed and path starts with ~/, expand it and try again
+    if path.starts_with("~/") {
+        if let Some(home) = env::var_os("HOME") {
+            let mut expanded_path = PathBuf::from(home);
+            expanded_path.push(&path[2..]);
+
+            if let Ok(content) = fs::read_to_string(&expanded_path) {
+                if let Ok(config) = serde_yaml::from_str::<Config>(&content) {
+                    return config;
+                }
             }
         }
     }
@@ -120,10 +141,7 @@ fn main() {
     let local_time = Local::now();
 
     // Get clock icon based on current local minutes
-    let clock_icon = get_accurate_clock_icon(
-        local_time.hour(),
-        local_time.minute()
-    );
+    let clock_icon = get_accurate_clock_icon(local_time.hour(), local_time.minute());
 
     let mut output = String::new();
     output.push_str(&format!("{}\n", clock_icon));
@@ -138,7 +156,10 @@ fn main() {
                 city.name
             ));
         } else {
-            eprintln!("Warning: Invalid timezone '{}' for {}", city.timezone, city.name);
+            eprintln!(
+                "Warning: Invalid timezone '{}' for {}",
+                city.timezone, city.name
+            );
         }
     }
 
