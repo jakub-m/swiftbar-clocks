@@ -167,8 +167,7 @@ fn main() {
         }
     }
 
-    // Write to stderr as specified
-    let stderr = io::stderr();
-    let mut handle = stderr.lock();
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
     let _ = handle.write_all(output.as_bytes());
 }
