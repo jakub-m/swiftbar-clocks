@@ -106,31 +106,6 @@ fn get_accurate_clock_icon(hour: u32, minute: u32) -> &'static str {
     }
 }
 
-// 🕛      travel-and-places       time    twelve o’clock  1F55B
-// 🕧      travel-and-places       time    twelve-thirty   1F567
-// 🕐      travel-and-places       time    one o’clock     1F550
-// 🕜      travel-and-places       time    one-thirty      1F55C
-// 🕑      travel-and-places       time    two o’clock     1F551
-// 🕝      travel-and-places       time    two-thirty      1F55D
-// 🕒      travel-and-places       time    three o’clock   1F552
-// 🕞      travel-and-places       time    three-thirty    1F55E
-// 🕓      travel-and-places       time    four o’clock    1F553
-// 🕟      travel-and-places       time    four-thirty     1F55F
-// 🕔      travel-and-places       time    five o’clock    1F554
-// 🕠      travel-and-places       time    five-thirty     1F560
-// 🕕      travel-and-places       time    six o’clock     1F555
-// 🕡      travel-and-places       time    six-thirty      1F561
-// 🕖      travel-and-places       time    seven o’clock   1F556
-// 🕢      travel-and-places       time    seven-thirty    1F562
-// 🕗      travel-and-places       time    eight o’clock   1F557
-// 🕣      travel-and-places       time    eight-thirty    1F563
-// 🕘      travel-and-places       time    nine o’clock    1F558
-// 🕤      travel-and-places       time    nine-thirty     1F564
-// 🕙      travel-and-places       time    ten o’clock     1F559
-// 🕥      travel-and-places       time    ten-thirty      1F565
-// 🕚      travel-and-places       time    eleven o’clock  1F55A
-// 🕦      travel-and-places       time    eleven-thirty   1F566
-
 fn list_timezones() {
     // chrono-tz provides TZ_VARIANTS constant with all timezones
     for tz in chrono_tz::TZ_VARIANTS {
