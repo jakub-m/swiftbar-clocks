@@ -198,12 +198,10 @@ fn main() {
     output.push_str(&format!("{}\n", clock_icon));
     output.push_str("---\n");
 
-    for (i, city) in config.cities.iter().enumerate() {
+    output.push_str(&format!("{}\n", local_time.to_rfc2822()));
+    for city in config.cities {
         if let Ok(tz) = city.timezone.parse::<Tz>() {
             let city_time = local_time.with_timezone(&tz);
-            if i == 0 {
-                output.push_str(&format!("{}\n", city_time.to_rfc2822()));
-            }
             output.push_str(&format!(
                 "{:02}:{:02} {}\n",
                 city_time.hour(),
