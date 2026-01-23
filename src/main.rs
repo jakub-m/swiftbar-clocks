@@ -1,4 +1,4 @@
-use chrono::{Local, Timelike};
+use chrono::{Local, Offset, Timelike};
 use chrono_tz::Tz;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
@@ -174,14 +174,30 @@ fn main() {
     output.push_str("---\n");
 
     output.push_str(&format!("{}\n", local_time.to_rfc2822()));
+
+    let local_offset_secs = local_time.offset().fix().local_minus_utc();
+
     for city in config.cities {
         if let Ok(tz) = city.timezone.parse::<Tz>() {
             let city_time = local_time.with_timezone(&tz);
+            let city_offset_secs = city_time.offset().fix().local_minus_utc();
+            let diff_secs = city_offset_secs - local_offset_secs;
+            let diff_hours = diff_secs as f64 / 3600.0;
+
+            let diff_str = if diff_hours == 0.0 {
+                String::new()
+            } else if diff_hours == diff_hours.trunc() {
+                format!(" ({:+}h)", diff_hours as i32)
+            } else {
+                format!(" ({:+.1}h)", diff_hours)
+            };
+
             output.push_str(&format!(
-                "{:02}:{:02} {}\n",
+                "{:02}:{:02} {}{}\n",
                 city_time.hour(),
                 city_time.minute(),
-                city.name
+                city.name,
+                diff_str
             ));
         } else {
             eprintln!(
